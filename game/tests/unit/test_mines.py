@@ -18,4 +18,4 @@ def should_precompute_adjacent_mines_and_return_real_board_given_a_visible_board
 
     expected_real_board = [['1', 'M', '1'], ['1', '2', '2'], ['0', '1', 'M']]
     
-    assert real_board == expected_real_board, f"expted {expected_real_board}, but got {real_board}"
+    assert real_board == expected_real_board, f"expected {expected_real_board}, but got {real_board}"
