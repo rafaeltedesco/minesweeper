@@ -1,3 +1,4 @@
+import pytest
 from game.src.mechanics.mines import randomly_generate_mines, precompute_adjacent_mines
 
 def should_randomly_generate_mines_positions_given_rows_cols_and_a_number_of_expected_mines():
@@ -6,6 +7,12 @@ def should_randomly_generate_mines_positions_given_rows_cols_and_a_number_of_exp
     seed = 42
     mines_positions = randomly_generate_mines(rows, cols, mines_count=10, seed=seed)
     assert mines_positions == expected_positions
+
+def should_prevent_mines_count_to_be_greather_than_fifty_percent_of_the_board_size_given_mines_count_provided():
+    rows = cols = 10
+    randomly_generate_mines(rows, cols, 49)
+    with pytest.raises(ValueError, match='"mine_counts" cannot be greather than 50% of the board size'):
+        randomly_generate_mines(rows, cols, mines_count=51)
 
 def should_precompute_adjacent_mines_and_return_real_board_given_a_visible_board():
     visible_board = [

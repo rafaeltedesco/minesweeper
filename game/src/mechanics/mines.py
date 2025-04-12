@@ -4,6 +4,9 @@ from typing import Optional
 
 
 def randomly_generate_mines(rows: int, cols: int, mines_count = 10, seed: Optional[int] = None) -> set[tuple[int, int]]:
+    if mines_count > (rows * cols) // 2:
+        raise ValueError('"mine_counts" cannot be greather than 50% of the board size')
+
     if seed is not None:
         random.seed(seed)
 
