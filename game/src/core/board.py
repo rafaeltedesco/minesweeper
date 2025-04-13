@@ -27,7 +27,7 @@ class Board:
     
     @property
     def visible_board(self) -> list[list[str]]:
-        return self._visible_board[:]
+        return [row[:] for row in self._visible_board]
     
     @property
     def real_board(self) -> list[list[str]]:
