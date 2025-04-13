@@ -39,7 +39,7 @@ def should_randomly_generate_mines_positions_given_rows_cols_and_a_number_of_exp
     assert mines_positions == expected_positions
 
 
-def should_prevent_mines_count_to_be_greather_than_fifty_percent_of_the_board_size_given_mines_count_provided():
+def should_prevent_mines_count_to_be_greater_than_fifty_percent_of_the_board_size_given_mines_count_provided():
     rows = cols = 10
     Board(rows, cols, mines_count=49)
     with pytest.raises(
