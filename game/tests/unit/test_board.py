@@ -1,4 +1,4 @@
-from game.src.mechanics.board import create_visible_board
+from game.src.core.board import create_visible_board
 
 def should_create_visible_board_given_fixed_number_of_rows_and_cols():
     n_rows = n_cols = 3
