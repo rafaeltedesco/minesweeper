@@ -43,7 +43,7 @@ def should_prevent_mines_count_to_be_greather_than_fifty_percent_of_the_board_si
     rows = cols = 10
     Board(rows, cols, mines_count=49)
     with pytest.raises(
-        ValueError, match='"mine_counts" cannot be greather than 50% of the board size'
+        ValueError, match='"mine_counts" cannot be greater than 50% of the board size'
     ):
         Board(rows, cols, mines_count=51)
 
@@ -72,8 +72,6 @@ def should_reveal_cell_and_show_number_of_adjacent_mines_given_location_not_mine
     rows = cols = 3
     board = Board(rows=rows, cols=cols, mines_count=2, seed=42)
     row, col = (1, 0)
-
-    [["0", "1", "M"], ["1", "2", "1"], ["M", "1", "0"]]
 
     event = board.reveal_cell(row, col)
     assert event is None
