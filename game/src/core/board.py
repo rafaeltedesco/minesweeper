@@ -43,7 +43,7 @@ class Board:
     
     def _randomly_generate_mines(self, seed: Optional[int] = None) -> set[tuple[int, int]]:
         if self._mines_count > (self._rows * self._cols) // 2:
-            raise ValueError('"mine_counts" cannot be greather than 50% of the board size')
+            raise ValueError('"mine_counts" cannot be greater than 50% of the board size')
 
         if seed is not None:
             random.seed(seed)
