@@ -31,7 +31,7 @@ class Board:
     
     @property
     def real_board(self) -> list[list[str]]:
-        return self._real_board[:]
+        return deepcopy(self._real_board)
 
     @property
     def size(self) -> tuple[int, int]:
