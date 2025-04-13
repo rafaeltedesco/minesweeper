@@ -42,8 +42,26 @@ def should_precompute_adjacent_mines_and_return_real_board_given_a_visible_board
 def should_reveal_cell_and_dispatch_game_over_event_given_location_selected_contains_mine():
     rows = cols = 3
     board = Board(rows=rows, cols=cols, mines_count=2, seed=42)
-    row, col = board.mines_positions.pop()
+    row, col = (0, 2)
+    
+    event = board.reveal_cell(row, col)
+    expected_visible_board = [['.', '.', 'M'], ['.', '.', '.'], ['.', '.', '.']]
+
+    assert event == Events.GAME_OVER
+    assert board.visible_board == expected_visible_board
+
+def should_reveal_cell_and_show_number_of_adjacent_mines_given_location_not_mine_and_has_adjacent_mines():
+    rows = cols = 3
+    board = Board(rows=rows, cols=cols, mines_count=2, seed=42)
+    row, col = (1, 0)
+
+    [['0', '1', 'M'], ['1', '2', '1'], ['M', '1', '0']]
 
     event = board.reveal_cell(row, col)
-    assert event == Events.GAME_OVER
-    assert board.visible_board[row][col] == Board.BoardConsts.MINE
+    assert event is None
+    
+    expected_visible_board = [
+        ['.', '.', '.'], ['1', '.', '.'], ['.', '.', '.']
+    ]
+    assert board.visible_board == expected_visible_board
+    

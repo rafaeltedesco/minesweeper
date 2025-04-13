@@ -72,7 +72,10 @@ class Board:
         return real_board
 
 
-    def reveal_cell(self, row: int, col: int) -> Events:
-        if self._real_board[row][col] == Board.BoardConsts.MINE:
-            self._visible_board[row][col] = self._real_board[row][col]
+    def reveal_cell(self, row: int, col: int) -> Events | None:
+        self._visible_board[row][col] = self._real_board[row][col]
+
+        if self._real_board[row][col] == Board.BoardConsts.MINE: 
             return Events.GAME_OVER
+        
+        return None
