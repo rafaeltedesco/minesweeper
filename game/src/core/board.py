@@ -1,4 +1,6 @@
 import random
+
+from collections import deque
 from copy import deepcopy
 from typing import Optional
 from .events import Events
@@ -7,7 +9,9 @@ class Board:
 
     class BoardConsts:
         NON_VISIBLE = '.'
+        EMPTY_CELL = '0'
         MINE = 'M'
+        DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (1, 0), (1, -1), (1, 1), (0, -1), (0, 1)]
 
     def __init__(self, rows: int, cols: int, mines_count: int = 10, seed: Optional[int] = None):
         self._rows = rows
@@ -57,25 +61,48 @@ class Board:
             Given a visible board, it will precompute all adjacent mines and returns the real board
         """
         real_board = deepcopy(self._visible_board)
-        directions = [(-1, -1), (-1, 0), (-1, 1), (1, 0), (1, -1), (1, 1), (0, -1), (0, 1)]
+        
         for row in range(self._rows):
             for col in range(self._cols):
                 adjacent_mines = 0
                 if (row, col) in self._mines_positions:
                     real_board[row][col] = Board.BoardConsts.MINE
                     continue
-                for dr, dc in directions:
+                for dr, dc in Board.BoardConsts.DIRECTIONS:
                     nr, nc = row + dr, col + dc
                     if 0 <= nr < self._rows and 0 <= nc < self._cols and (nr, nc) in self._mines_positions:
                         adjacent_mines += 1
                 real_board[row][col] = str(adjacent_mines)
         return real_board
 
+    def _reveal(self, row: int, col: int) -> None:
+        self._visible_board[row][col] = self._real_board[row][col]
 
     def reveal_cell(self, row: int, col: int) -> Events | None:
-        self._visible_board[row][col] = self._real_board[row][col]
+        self._reveal(row, col)
 
         if self._real_board[row][col] == Board.BoardConsts.MINE: 
             return Events.GAME_OVER
         
+        if self._real_board[row][col] != Board.BoardConsts.EMPTY_CELL:
+            return None
+
+        current_position = (row, col)
+        queue = deque([current_position])
+        visited = set()
+        visited.add(current_position)
+
+        while queue:
+            r, c = queue.popleft()
+
+            for dr, dc in Board.BoardConsts.DIRECTIONS:
+                nr, nc = r + dr, c + dc
+                
+                if 0 <= nr < self._rows and 0 <= nc < self._cols \
+                    and self._real_board[nr][nc] == Board.BoardConsts.EMPTY_CELL \
+                    and (nr, nc) not in visited:
+                    self._reveal(nr, nc)
+                    visited.add((nr, nc))
+                    queue.append((nr, nc))
+
         return None
