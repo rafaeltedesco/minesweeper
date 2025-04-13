@@ -1,9 +1,13 @@
 import random
 from copy import deepcopy
 from typing import Optional
-
+from .events import Events
 
 class Board:
+
+    class BoardConsts:
+        NON_VISIBLE = '.'
+        MINE = 'M'
 
     def __init__(self, rows: int, cols: int, mines_count: int = 10, seed: Optional[int] = None):
         self._rows = rows
@@ -15,7 +19,7 @@ class Board:
 
     @property
     def mines_positions(self) -> set[tuple[int, int]]:
-        return self._mines_positions
+        return self._mines_positions.copy()
     
     @property
     def visible_board(self) -> list[list[str]]:
@@ -23,14 +27,14 @@ class Board:
     
     @property
     def real_board(self) -> list[list[str]]:
-        return self._real_board
+        return self._real_board[:]
 
     @property
     def size(self) -> tuple[int, int]:
         return (self._rows, self._cols)
 
     def _create_visible_board(self) -> list[list[str]]:
-        visible_board = [['.' for _ in range(self._cols)] for _ in range(self._rows)]
+        visible_board = [[Board.BoardConsts.NON_VISIBLE for _ in range(self._cols)] for _ in range(self._rows)]
         return visible_board
     
     def _randomly_generate_mines(self, seed: Optional[int] = None) -> set[tuple[int, int]]:
@@ -58,7 +62,7 @@ class Board:
             for col in range(self._cols):
                 adjacent_mines = 0
                 if (row, col) in self._mines_positions:
-                    real_board[row][col] = "M"
+                    real_board[row][col] = Board.BoardConsts.MINE
                     continue
                 for dr, dc in directions:
                     nr, nc = row + dr, col + dc
@@ -66,3 +70,9 @@ class Board:
                         adjacent_mines += 1
                 real_board[row][col] = str(adjacent_mines)
         return real_board
+
+
+    def reveal_cell(self, row: int, col: int) -> Events:
+        if self._real_board[row][col] == Board.BoardConsts.MINE:
+            self._visible_board[row][col] = self._real_board[row][col]
+            return Events.GAME_OVER
