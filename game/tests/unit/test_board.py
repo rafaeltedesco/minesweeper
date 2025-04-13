@@ -43,7 +43,7 @@ def should_prevent_mines_count_to_be_greater_than_fifty_percent_of_the_board_siz
     rows = cols = 10
     Board(rows, cols, mines_count=49)
     with pytest.raises(
-        ValueError, match='"mine_counts" cannot be greater than 50% of the board size'
+        ValueError, match='"mines_count" cannot be greater than 50% of the board size'
     ):
         Board(rows, cols, mines_count=51)
 
