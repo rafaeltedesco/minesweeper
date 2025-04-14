@@ -108,6 +108,7 @@ def should_set_won_the_game_to_true_given_all_non_mines_cells_are_revealed():
     rows = cols = 3
     board = Board(rows, cols, mines_count=2, seed=40)
 
+
     assert board.has_won is False
 
     movements_to_win = [
@@ -116,8 +117,14 @@ def should_set_won_the_game_to_true_given_all_non_mines_cells_are_revealed():
         (2, 1), (2, 2)
     ]
 
+    stack = []
+
     for r, c in movements_to_win:
         event = board.reveal_cell(r, c)
+        stack.append(event)
 
-    assert event == Events.WON_GAME
+    final_event = stack.pop()
+
+    assert not any(stack)
+    assert final_event == Events.WON_GAME
     assert board.has_won is True
