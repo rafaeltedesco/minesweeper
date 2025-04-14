@@ -20,6 +20,12 @@ class Board:
         self._visible_board = self._create_visible_board()
         self._mines_positions = self._randomly_generate_mines(seed=seed)
         self._real_board = self._precompute_adjacent_mines()
+        self._has_won = False
+        self._revealed_cells = 0
+
+    @property
+    def has_won(self) -> bool:
+        return self._has_won
 
     @property
     def mines_positions(self) -> set[tuple[int, int]]:
@@ -77,6 +83,14 @@ class Board:
 
     def _reveal(self, row: int, col: int) -> None:
         self._visible_board[row][col] = self._real_board[row][col]
+        self._revealed_cells += 1
+
+
+    def _check_victory(self) -> Events | None:
+        if self._revealed_cells + len(self.mines_positions) == (self._rows * self._cols):
+            self._has_won = True
+            return Events.WON_GAME
+        return None
 
     def reveal_cell(self, row: int, col: int) -> Events | None:
         self._reveal(row, col)
@@ -85,7 +99,7 @@ class Board:
             return Events.GAME_OVER
         
         if self._real_board[row][col] != Board.BoardConsts.EMPTY_CELL:
-            return None
+            return self._check_victory()
 
         current_position = (row, col)
         queue = deque([current_position])
@@ -105,4 +119,4 @@ class Board:
                     visited.add((nr, nc))
                     queue.append((nr, nc))
 
-        return None
+        return self._check_victory()
